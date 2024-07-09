@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Reservations from "@/components/Reservations";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { TbArrowsMaximize, TbUsers } from "react-icons/tb";
 const getRoomData = async ({ params }: { paramas: any }) => {
     const response = await fetch(`http://127.0.0.1:1337/api/rooms/${params.id}?populate=*`, {
@@ -8,9 +10,21 @@ const getRoomData = async ({ params }: { paramas: any }) => {
     });
     return await response.json();
 }
+const getReservationsData = async () => {
+    const response = await fetch(`http://127.0.0.1:1337/api/reservations?populate=*`, {
+        next: {
+            revalidate: 0
+        }
+    });
+    return await response.json();
+}
 
 export default async function RoomDetails({ params }: { paramas: any }) {
     const rooms = await getRoomData({ params });
+    const reservations = await getReservationsData();
+    const {isAuthenticated, getUser} = getKindeServerSession();
+    const isUserAuthenticated = await isAuthenticated();
+    const userData = await getUser();
     const imgURL = `http://127.0.0.1:1337${rooms.data?.attributes.image.data.attributes.url}`;
     return <section className="min-h-[80vh]">
         <div className="container mx-auto py-8">
@@ -47,7 +61,13 @@ export default async function RoomDetails({ params }: { paramas: any }) {
                     </div>
                 </div>
                 { /*reservation*/}
-                <div className="w-full lg:max-w-[360px] h-max bg-green-300">reservation</div>
+                <div className="w-full lg:max-w-[360px] h-max">
+                    <Reservations
+                        reservations={reservations}
+                        room={rooms}
+                        isAuthenticated={isUserAuthenticated}
+                        userData={userData} />
+                </div>
             </div>
         </div>
     </section>;
