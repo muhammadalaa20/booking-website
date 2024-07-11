@@ -91,10 +91,10 @@ export default function Reservations({ reservations, room, userData, isAuthentic
             const newCheckIn = checkInDate.setHours(0, 0, 0, 0)
             const newCheckOut = checkOutDate.setHours(0, 0, 0, 0)
             const reserved =
-                (newCheckIn >= oldCheckIn && newCheckIn < oldCheckOut)     //
-                || (newCheckOut > oldCheckIn && newCheckOut <= oldCheckOut)   //
-                || (oldCheckIn > newCheckIn && oldCheckIn < newCheckOut)      //
-                || (oldCheckOut > newCheckIn && oldCheckOut < newCheckOut)    //
+                (newCheckIn >= oldCheckIn && newCheckIn <= oldCheckOut)     //
+                || (newCheckOut >= oldCheckIn && newCheckOut <= oldCheckOut)   //
+                || (oldCheckIn >= newCheckIn && oldCheckIn <= newCheckOut)      //
+                || (oldCheckOut >= newCheckIn && oldCheckOut <= newCheckOut)    //
             return reserved
         })
 
